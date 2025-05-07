@@ -15,7 +15,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ApiModel(description = "员工登录返回的数据格式")
 public class EmployeeLoginVO implements Serializable {
-
+    // 建议显式声明 serialVersionUID
+    private static final long serialVersionUID = 1L;
     @ApiModelProperty("主键值")
     private Long id;
 
