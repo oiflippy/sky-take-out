@@ -12,6 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DishItemVO implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     //菜品名称
     private String name;

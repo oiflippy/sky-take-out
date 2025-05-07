@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,6 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SetmealVO implements Serializable {
+    // 建议显式声明 serialVersionUID
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 

@@ -15,6 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BusinessDataVO implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Double turnover;//营业额
 

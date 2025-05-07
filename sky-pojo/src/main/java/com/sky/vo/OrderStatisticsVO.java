@@ -1,10 +1,12 @@
 package com.sky.vo;
 
 import lombok.Data;
+
 import java.io.Serializable;
 
 @Data
 public class OrderStatisticsVO implements Serializable {
+private static final long serialVersionUID = 1L;
     //待接单数量
     private Integer toBeConfirmed;
 

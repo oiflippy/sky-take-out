@@ -15,6 +15,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SetmealOverViewVO implements Serializable {
+    // 建议显式声明 serialVersionUID
+    private static final long serialVersionUID = 1L;
     // 已启售数量
     private Integer sold;
 
