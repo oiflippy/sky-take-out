@@ -1,6 +1,7 @@
 package com.sky.mapper;
 
 import com.sky.entity.Employee;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -18,4 +19,7 @@ public interface EmployeeMapper {
 
     @Update("update employee set password = #{password} where id = #{id}")
     void update(Employee employee);
+
+    @Insert("insert into employee values (default,#{name},#{username},#{password},#{phone},#{sex},#{idNumber},#{createTime},#{updateTime},#{createUser},#{updateUser},#{status})")
+    void insert(Employee employee);
 }
