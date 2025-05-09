@@ -1,4 +1,4 @@
-package com.sky.config; // 或者 com.sky.security.filter
+package com.sky.interceptor; // 或者 com.sky.security.filter
 
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.context.BaseContext;
@@ -90,9 +90,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
 
         // 继续执行过滤器链中的下一个过滤器
+// 执行过滤器链的核心逻辑
         try {
             filterChain.doFilter(request, response);
         } finally {
+            // 必须清理ThreadLocal中的线程私有数据，防止内存泄漏
+            // 在Tomcat等线程池化服务器中，线程会被复用，不及时清理会导致数据错乱
             BaseContext.removeCurrentId(); // CRITICAL: Ensure ThreadLocal is cleared
             log.debug("Cleared BaseContext for current thread.");
         }

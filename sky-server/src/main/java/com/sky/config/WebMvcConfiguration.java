@@ -1,8 +1,6 @@
 package com.sky.config;
 
-import com.sky.interceptor.JwtTokenAdminInterceptor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -22,8 +20,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Slf4j
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
-    @Autowired
-    private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
+//    @Autowired
+//    private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
 
     /**
      * 注册自定义拦截器
