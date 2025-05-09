@@ -6,14 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderPaymentVO implements Serializable {
-
+    private static final long serialVersionUID = 1L;
     private String nonceStr; //随机字符串
     private String paySign; //签名
     private String timeStamp; //时间戳

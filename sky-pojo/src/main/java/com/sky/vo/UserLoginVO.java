@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserLoginVO implements Serializable {
-
+    private static final long serialVersionUID = 1L;
     private Long id;
     private String openid;
     private String token;

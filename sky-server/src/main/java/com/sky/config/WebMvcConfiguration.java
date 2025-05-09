@@ -34,12 +34,17 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     // 记录日志，表示开始注册自定义拦截器
         log.info("开始注册自定义拦截器...");
     // 向拦截器注册表中添加jwtTokenAdminInterceptor拦截器
+    // 由于JWT认证已由Spring Security的JwtAuthenticationTokenFilter处理，
+    // 此处不再需要注册JwtTokenAdminInterceptor进行认证。
+    // 如果JwtTokenAdminInterceptor还承担其他非认证职责（例如设置BaseContext，但这已移至新过滤器），
+    // 则需要评估是否仍需以其他方式注册或重构。
+    /*
         registry.addInterceptor(jwtTokenAdminInterceptor)
             // 设置拦截器拦截的路径模式，这里表示拦截所有以/admin/开头的请求
                 .addPathPatterns("/admin/**")
             // 设置拦截器排除的路径模式，这里表示不拦截/admin/employee/login路径的请求
                 .excludePathPatterns("/admin/employee/login");
-
+    */
     }
 
     /**

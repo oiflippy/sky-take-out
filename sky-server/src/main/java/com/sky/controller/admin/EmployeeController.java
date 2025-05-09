@@ -13,10 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +52,7 @@ public class EmployeeController {
                 jwtProperties.getAdminSecretKey(),
                 jwtProperties.getAdminTtl(),
                 claims);
-        System.out.println(token);
+        System.out.println(JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(),token));
         EmployeeLoginVO employeeLoginVO = EmployeeLoginVO.builder()
                 .id(employee.getId())
                 .userName(employee.getUsername())
@@ -86,4 +83,10 @@ public class EmployeeController {
         return Result.success();
     }
 
+    @GetMapping("/test-auth")
+    @ApiOperation("测试认证接口")
+    public Result<String> testAuth() {
+        log.info("测试认证接口被访问");
+        return Result.success("恭喜！认证通过，您可以访问此受保护的资源。");
+    }
 }
