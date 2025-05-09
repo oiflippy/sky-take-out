@@ -90,6 +90,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
 
         // 继续执行过滤器链中的下一个过滤器
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            BaseContext.removeCurrentId(); // CRITICAL: Ensure ThreadLocal is cleared
+            log.debug("Cleared BaseContext for current thread.");
+        }
     }
 }
