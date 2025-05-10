@@ -48,3 +48,25 @@ To prevent potential issues in thread-pooled environments where a previous user'
 *   **File Affected:** [`sky-server/src/main/java/com/sky/config/JwtAuthenticationTokenFilter.java`](sky-server/src/main/java/com/sky/config/JwtAuthenticationTokenFilter.java)
 *   **Method Affected:** `doFilterInternal`
 *   **Logic Change:** Wrapped `filterChain.doFilter(request, response);` in a `try...finally` block. Added `BaseContext.removeCurrentId();` and a debug log statement in the `finally` block.
+---
+### Decision (Debug)
+[2025-05-09 21:01:38] - Bug Fix Strategy: Corrected Mockito verification in `EmployeeServiceImplTest.testBatchSaveEmployees`.
+
+**Rationale:**
+The test failed with `org.mockito.exceptions.verification.TooManyActualInvocations` because `Mockito.verify` was called inside a loop, leading to an incorrect verification count after the first iteration. The fix involves moving the `verify` call outside the loop and using `Mockito.times(50)` to assert the `insert` method on the mock `employeeMapper` was called the expected number of times (50) throughout the loop's execution.
+
+**Details:**
+Affected components/files:
+- Test File: [`sky-server/src/test/java/com/sky/service/impl/EmployeeServiceImplTest.java`](sky-server/src/test/java/com/sky/service/impl/EmployeeServiceImplTest.java)
+- Method: `testBatchSaveEmployees()`
+---
+### Decision (Code)
+[2025-05-09 21:21:15] - 将员工测试数据初始化逻辑从 `CommandLineRunner` 迁移到专用的测试类 `TestDataInitializerTest.java`。
+
+**Rationale:**
+根据用户反馈，测试数据的初始化更适合放在测试环境中执行，而不是作为应用启动时的一部分。这样可以更好地隔离测试数据与生产环境，并且方便按需执行数据初始化。
+
+**Details:**
+*   新文件: [`sky-server/src/test/java/com/sky/runner/TestDataInitializerTest.java`](sky-server/src/test/java/com/sky/runner/TestDataInitializerTest.java)
+*   旧文件 (已删除): `sky-server/src/main/java/com/sky/runner/TestDataInitializer.java`
+*   实现方式：使用 `@SpringBootTest` 和 `@Test` 注解，通过 JUnit 执行。
