@@ -110,4 +110,12 @@ public class EmployeeController {
         log.info("测试认证接口被访问");
         return Result.success("恭喜！认证通过，您可以访问此受保护的资源。");
     }
+
+    @PostMapping("/status/{status}")
+    @ApiOperation("启用，禁用员工账号")
+    public Result startOrStop(@PathVariable Integer status,Long id){
+       employeeService.startOrStop(status,id);
+       return Result.success();
+    }
+
 }

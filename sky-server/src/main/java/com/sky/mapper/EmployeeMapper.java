@@ -20,7 +20,7 @@ public interface EmployeeMapper {
     Employee getByUsername(String username);
 
     @Update("update employee set password = #{password} where id = #{id}")
-    void update(Employee employee);
+    void updatepassword(Employee employee);
 
  /**
      * 插入员工数据
@@ -31,4 +31,6 @@ public interface EmployeeMapper {
 
 
     Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+
+    void update(Employee employee);
 }
