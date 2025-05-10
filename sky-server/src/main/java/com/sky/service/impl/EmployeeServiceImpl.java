@@ -122,4 +122,75 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.update(employee);
     }
 
+    /**
+     * 根据id查询员工
+     *
+     * @param id
+     * @return
+     */
+    public Employee getById(Long id) {
+        Employee employee = employeeMapper.getById(id);
+        employee.setPassword("****"); // 密码脱敏
+        return employee;
+    }
+
+     /**
+     * 编辑员工信息
+     *
+     * @param employeeDTO
+     */
+    @Override
+     /**
+     * 更新员工信息，将传入的员工数据传输对象转换为实体对象后进行持久化更新。
+     * 
+     * <p>该方法会自动设置更新时间和更新人信息，并执行数据库更新操作。
+     * 注意：当前实现中未启用员工存在性校验和用户名唯一性校验逻辑</p>
+     *
+     * @param employeeDTO 包含员工更新数据的数据传输对象，需包含有效ID和必要的业务字段
+     */
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        
+        /**
+         * 将员工DTO对象属性复制到实体对象
+         * 用于构建待更新的持久化实体
+         */
+        BeanUtils.copyProperties(employeeDTO, employee);
+    
+        // 根据ID查询原始员工信息
+        Employee originalEmployee = employeeMapper.getById(employeeDTO.getId());
+        if (originalEmployee == null) {
+            // 理论上更新操作时员工应该存在，但作为防御性编程，进行检查
+            throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
+        }
+    
+        // 只有当用户名实际发生改变时，才进行唯一性校验
+        if (employeeDTO.getUsername() != null && !employeeDTO.getUsername().equals(originalEmployee.getUsername())) {
+            Employee existingEmployee = employeeMapper.getByUsernameAndNotId(employeeDTO.getUsername(), employeeDTO.getId());
+            if (existingEmployee != null) {
+                // 使用已有的 MessageConstant.ALREADY_EXISTS
+                throw new AccountLockedException(MessageConstant.ALREADY_EXISTS);
+            }
+        }
+    
+        /**
+         * 设置审计字段：
+         * 1. 更新时间设置为当前系统时间
+         * 2. 更新人设置为当前线程绑定的操作用户ID
+         */
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+    
+        /**
+         * 执行数据库更新操作
+         * 使用MyBatis Mapper将实体对象同步到数据库
+         */
+        employeeMapper.update(employee);
+    }
+     @Override
+     public void logout(Employee employee) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'logout'");
+     }
+
 }

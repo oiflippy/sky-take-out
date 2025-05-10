@@ -31,4 +31,7 @@
 
     </update>
 
+    <select id="getByUsernameAndNotId" resultType="com.sky.entity.Employee">
+        select * from employee where username = #{username} and id != #{id}
+    </select>
 </mapper>

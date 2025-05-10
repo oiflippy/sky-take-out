@@ -70,3 +70,21 @@ Affected components/files:
 *   新文件: [`sky-server/src/test/java/com/sky/runner/TestDataInitializerTest.java`](sky-server/src/test/java/com/sky/runner/TestDataInitializerTest.java)
 *   旧文件 (已删除): `sky-server/src/main/java/com/sky/runner/TestDataInitializer.java`
 *   实现方式：使用 `@SpringBootTest` 和 `@Test` 注解，通过 JUnit 执行。
+
+---
+### Decision (Architect)
+[2025-05-10 13:52:00] - Enhance Employee Update Logic for Username Uniqueness.
+
+**Rationale:**
+The current employee update functionality (`EmployeeServiceImpl.update`) lacks proper username uniqueness validation. It does not check if the new username is already taken by *another* employee, excluding the current one being edited. This can lead to data integrity issues or user-facing errors like "'testuser15'已存在" when the system incorrectly flags the current user's existing username as a duplicate during an update attempt without changing the username, or when changing to a username already in use by a different employee. The `spec-pseudocode` mode correctly identified this gap.
+
+**Implications/Details:**
+*   **Service Layer (`EmployeeServiceImpl.java`):**
+    *   The `update` method needs to incorporate a check for username existence, excluding the ID of the employee being updated.
+    *   If a username conflict is detected (i.e., another employee already has this username), a `BusinessException` (or a more specific custom exception like `UsernameAlreadyExistsException`) should be thrown with a clear message (e.g., [`MessageConstant.ACCOUNT_ALREADY_EXISTS`](sky-common/src/main/java/com/sky/constant/MessageConstant.java) or a new constant).
+*   **Mapper Layer (`EmployeeMapper.java` and `EmployeeMapper.xml`):**
+    *   A new method, such as `getByUsernameAndNotId(String username, Long id)`, needs to be added to [`EmployeeMapper.java`](sky-server/src/main/java/com/sky/mapper/EmployeeMapper.java).
+    *   The corresponding SQL query in [`EmployeeMapper.xml`](sky-server/src/main/resources/mapper/EmployeeMapper.xml) should select an employee where `username = #{username}` AND `id != #{id}`.
+*   **Controller Layer (`EmployeeController.java`):**
+    *   No direct changes are likely needed in the controller, as the exception thrown by the service layer should be handled by the global exception handler ([`GlobalExceptionHandler.java`](sky-server/src/main/java/com/sky/handler/GlobalExceptionHandler.java)).
+*   **Error Message:** The error message "'testuser15'已存在" suggests the current check might be using `getByUsername` without excluding the current employee's ID, or a database unique constraint is being hit without a prior application-level check. The proposed solution addresses the application-level check.
