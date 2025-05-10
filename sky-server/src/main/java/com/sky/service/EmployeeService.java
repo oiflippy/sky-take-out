@@ -30,5 +30,7 @@ public interface EmployeeService {
 
     void update(EmployeeDTO employeeDTO);
 
+    void logout(Employee employee);
+
     
 }

@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 import com.sky.constant.JwtClaimsConstant;
+import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
@@ -73,6 +74,10 @@ public class EmployeeController {
     @PostMapping("/logout")
     @ApiOperation("员工退出")
     public Result<String> logout() {
+        Employee employee = new Employee();
+        employee.setId(BaseContext.getCurrentId());
+        log.info("{}号员工退出");
+        employeeService.logout(employee);
         return Result.success();
     }
 

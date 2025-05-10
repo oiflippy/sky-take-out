@@ -88,3 +88,120 @@ The current employee update functionality (`EmployeeServiceImpl.update`) lacks p
 *   **Controller Layer (`EmployeeController.java`):**
     *   No direct changes are likely needed in the controller, as the exception thrown by the service layer should be handled by the global exception handler ([`GlobalExceptionHandler.java`](sky-server/src/main/java/com/sky/handler/GlobalExceptionHandler.java)).
 *   **Error Message:** The error message "'testuser15'已存在" suggests the current check might be using `getByUsername` without excluding the current employee's ID, or a database unique constraint is being hit without a prior application-level check. The proposed solution addresses the application-level check.
+
+---
+### Decision (Architect)
+[2025-05-10 16:06:39] - Implement "分类管理" (Category Management) Feature (Chapter 5.2)
+
+**Rationale:**
+To introduce functionality for managing product categories, including creation, reading, updating, deleting (CRUD), and listing categories. This is a core feature for organizing dishes and setmeals within the application. The implementation follows the established three-tier architecture.
+
+**Implications/Details:**
+*   **New Components:**
+   *   **Mapper Interfaces:**
+       *   `com.sky.mapper.DishMapper`: Added `Integer countByCategoryId(Long categoryId)`
+       *   `com.sky.mapper.SetmealMapper`: Added `Integer countByCategoryId(Long categoryId)`
+       *   `com.sky.mapper.CategoryMapper`: New interface with methods for `insert`, `pageQuery`, `deleteById`, `update`, `list`.
+   *   **Mapper XML:**
+       *   `sky-server/src/main/resources/mapper/CategoryMapper.xml`: New XML file defining SQL for `CategoryMapper` methods (`pageQuery`, `update`, `list`).
+   *   **Service Interface:**
+       *   `com.sky.service.CategoryService`: New interface defining business logic methods: `save`, `pageQuery`, `deleteById`, `update`, `startOrStop`, `list`.
+   *   **Service Implementation:**
+       *   `com.sky.service.impl.CategoryServiceImpl`: New class implementing `CategoryService`.
+           *   Injects `CategoryMapper`, `DishMapper`, `SetmealMapper`.
+           *   Handles business logic, including checking for associated dishes/setmeals before deletion.
+   *   **Controller:**
+       *   `com.sky.controller.admin.CategoryController`: New REST controller for admin-side category management.
+           *   Maps HTTP requests to `CategoryService` methods.
+           *   Endpoints: `/admin/category` (POST for save, PUT for update, DELETE for deleteById), `/admin/category/page` (GET for pageQuery), `/admin/category/status/{status}` (POST for startOrStop), `/admin/category/list` (GET for list).
+*   **Key Architectural Points:**
+   *   Adherence to the existing **Three-Tier Architecture (Controller-Service-Mapper)**.
+   *   Usage of DTOs (`CategoryDTO`, `CategoryPageQueryDTO`) for data transfer between Controller and Service.
+   *   `PageHelper` for pagination in the Mapper layer.
+   *   Exception handling for deletion constraints (e.g., `DeletionNotAllowedException`).
+   *   Use of `BaseContext.getCurrentId()` for `createUser` and `updateUser` fields.
+   *   Logging with `@Slf4j`.
+   *   Swagger annotations (`@Api`, `@ApiOperation`) for API documentation.
+*   **Dependencies:**
+   *   `CategoryServiceImpl` depends on `CategoryMapper`, `DishMapper`, and `SetmealMapper`.
+   *   `CategoryController` depends on `CategoryService`.
+*   **Noteworthy Implementation Details:**
+   *   `CategoryServiceImpl.deleteById` checks `DishMapper` and `SetmealMapper` before deleting a category to prevent data integrity issues.
+   *   `CategoryServiceImpl.save` sets default status and audit fields.
+   *   `CategoryMapper.xml` includes dynamic SQL for filtering and ordering.
+---
+### Decision (Code)
+[2025-05-10 16:09:22] - Created `DishMapper.java` interface with `countByCategoryId` method.
+
+**Rationale:**
+This mapper interface and method are required for the "分类管理" (Category Management) feature. Specifically, it's used by `CategoryServiceImpl` to check if a category is associated with any dishes before allowing its deletion, thus ensuring data integrity.
+
+**Details:**
+*   File Created: [`sky-server/src/main/java/com/sky/mapper/DishMapper.java`](sky-server/src/main/java/com/sky/mapper/DishMapper.java)
+*   Method Added: `Integer countByCategoryId(Long categoryId)`
+
+---
+### Decision (Code)
+[2025-05-10 16:10:50] - Created `SetmealMapper.java` interface with `countByCategoryId` method.
+
+**Rationale:**
+This mapper interface and method are required for the "分类管理" (Category Management) feature. Specifically, it's used by `CategoryServiceImpl` to check if a category is associated with any setmeals before allowing its deletion, thus ensuring data integrity.
+
+**Details:**
+*   File Created: [`sky-server/src/main/java/com/sky/mapper/SetmealMapper.java`](sky-server/src/main/java/com/sky/mapper/SetmealMapper.java)
+*   Method Added: `Integer countByCategoryId(Long categoryId)`
+---
+### Decision (Code)
+[2025-05-10 16:13:28] - Created/Updated `CategoryMapper.java` interface.
+
+**Rationale:**
+This mapper interface is a core component for the "分类管理" (Category Management) feature. It defines the data access methods required for category CRUD operations and listing. The provided existing content matched the pseudocode, so it was used directly.
+
+**Details:**
+*   File Created/Updated: [`sky-server/src/main/java/com/sky/mapper/CategoryMapper.java`](sky-server/src/main/java/com/sky/mapper/CategoryMapper.java)
+*   Methods included: `insert`, `pageQuery`, `deleteById`, `update`, `list`.
+---
+### Decision (Code)
+[2025-05-10 16:15:30] - Created `CategoryMapper.xml` file.
+
+**Rationale:**
+This XML mapper file is essential for the "分类管理" (Category Management) feature. It defines the SQL queries corresponding to the methods in the `CategoryMapper.java` interface, enabling database interactions for category CRUD operations and listing. The content was generated based on the provided pseudocode, ensuring adherence to MyBatis conventions and project-specific requirements.
+
+**Details:**
+*   File Created: [`sky-server/src/main/resources/mapper/CategoryMapper.xml`](sky-server/src/main/resources/mapper/CategoryMapper.xml)
+*   Key elements: `mapper` namespace, `select` for `pageQuery` and `list`, `update` for `update`.
+---
+### Decision (Code)
+[2025-05-10 16:17:01] - Created/Updated `CategoryService.java` interface.
+
+**Rationale:**
+This service interface is a core component for the "分类管理" (Category Management) feature. It defines the business logic methods required for category operations. The content was based on the provided pseudocode and reference material.
+
+**Details:**
+*   File Created/Updated: [`sky-server/src/main/java/com/sky/service/CategoryService.java`](sky-server/src/main/java/com/sky/service/CategoryService.java)
+*   Methods included: `save`, `pageQuery`, `deleteById`, `update`, `startOrStop`, `list`.
+
+---
+### Decision (Code)
+[2025-05-10 16:19:36] - Created `CategoryServiceImpl.java` class.
+
+**Rationale:**
+This service implementation is a core component for the "分类管理" (Category Management) feature. It implements the `CategoryService` interface and contains the business logic for category operations, such as creating, updating, deleting, and querying categories. It also handles dependencies like `CategoryMapper`, `DishMapper`, and `SetmealMapper` for data access and validation.
+
+**Details:**
+*   File Created: [`sky-server/src/main/java/com/sky/service/impl/CategoryServiceImpl.java`](sky-server/src/main/java/com/sky/service/impl/CategoryServiceImpl.java)
+*   Key methods implemented: `save`, `pageQuery`, `deleteById`, `update`, `startOrStop`, `list`.
+*   Dependencies Injected: `CategoryMapper`, `DishMapper`, `SetmealMapper`.
+*   Business Logic: Includes setting default status and audit fields on save, checking for related dishes/setmeals before deletion.
+---
+### Decision (Code)
+[2025-05-10 16:23:33] - Created `CategoryController.java` class.
+
+**Rationale:**
+This controller is a core component for the "分类管理" (Category Management) feature. It handles HTTP requests related to category management and delegates to the `CategoryService`. The implementation is based on the provided pseudocode and aligns with the project's RESTful API design.
+
+**Details:**
+*   File Created: [`sky-server/src/main/java/com/sky/controller/admin/CategoryController.java`](sky-server/src/main/java/com/sky/controller/admin/CategoryController.java)
+*   Key methods implemented: `save`, `page`, `deleteById`, `update`, `startOrStop`, `list`.
+*   Dependencies Injected: `CategoryService`.
+*   Annotations: `@RestController`, `@RequestMapping`, `@Api`, `@ApiOperation`, `@Slf4j`.
