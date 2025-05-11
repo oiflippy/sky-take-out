@@ -205,3 +205,16 @@ This controller is a core component for the "分类管理" (Category Management)
 *   Key methods implemented: `save`, `page`, `deleteById`, `update`, `startOrStop`, `list`.
 *   Dependencies Injected: `CategoryService`.
 *   Annotations: `@RestController`, `@RequestMapping`, `@Api`, `@ApiOperation`, `@Slf4j`.
+---
+### Decision (Code)
+[2025-05-10 20:40:41] - 实现基于AOP的公共字段自动填充
+
+**Rationale:**
+根据项目需求和提供的规格，采用AOP切面方式统一处理实体的创建时间、创建人、更新时间、更新人字段的自动填充，减少业务代码冗余，提高代码可维护性。
+
+**Details:**
+*   创建了枚举类 `com.sky.enumeration.OperationType` 用于区分操作类型（INSERT/UPDATE）。
+*   创建了注解 `com.sky.annotation.AutoFill` 用于标记需要自动填充的Mapper方法。
+*   创建了切面类 `com.sky.aspect.AutoFillAspect`，通过反射机制在目标方法执行前填充公共字段。
+*   修改了 `CategoryMapper` 和 `EmployeeMapper`，在其 `insert` 和 `update` 方法上添加了 `@AutoFill` 注解。
+*   修改了 `CategoryServiceImpl` 和 `EmployeeServiceImpl`，注释掉了原有的手动设置公共字段的代码。

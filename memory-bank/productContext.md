@@ -12,6 +12,7 @@ YYYY-MM-DD HH:MM:SS - Log of updates made will be appended as footnotes to the e
 ## Key Features
 
 *   
+*   基于AOP的公共字段自动填充功能
 
 ## Overall Architecture
 

@@ -17,6 +17,11 @@ YYYY-MM-DD HH:MM:SS - Log of updates made.
     *   Populating audit fields (e.g., `createTime`, `updateTime`, `createUser`, `updateUser`).
     *   Coordinating calls to Mapper/Repository interfaces for data persistence.
 
+*   **AOP for Common Field Auto-Filling:** [2025-05-10 20:46:00] - Utilizes Aspect-Oriented Programming to automatically populate common entity fields (e.g., `createTime`, `updateTime`, `createUser`, `updateUser`) before database insertion or update operations. This is achieved through:
+    *   A custom annotation ([`@AutoFill`](sky-server/src/main/java/com/sky/annotation/AutoFill.java:15)) to mark Mapper methods requiring this behavior.
+    *   An enumeration ([`OperationType`](sky-common/src/main/java/com/sky/enumeration/OperationType.java:6)) to distinguish between `INSERT` and `UPDATE` operations.
+    *   An Aspect class ([`AutoFillAspect`](sky-server/src/main/java/com/sky/aspect/AutoFillAspect.java:20)) that intercepts calls to annotated Mapper methods and uses reflection to set the field values.
+    This pattern centralizes the logic for handling common fields, reduces boilerplate code in Service and Mapper layers, and improves maintainability.
 ## Architectural Patterns
 
 *   **Three-Tier Architecture (Controller-Service-Mapper):** [2025-05-09 20:42:26] - The application follows a classic three-tier (or layered) architecture:

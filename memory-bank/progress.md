@@ -49,3 +49,7 @@
 * [2025-05-10 16:17:01] - Code Task Status Update: Created/Updated [`sky-server/src/main/java/com/sky/service/CategoryService.java`](sky-server/src/main/java/com/sky/service/CategoryService.java) as part of "分类管理" feature.
 * [2025-05-10 16:19:36] - Code Task Status Update: Created [`sky-server/src/main/java/com/sky/service/impl/CategoryServiceImpl.java`](sky-server/src/main/java/com/sky/service/impl/CategoryServiceImpl.java) as part of "分类管理" feature.
 * [2025-05-10 16:23:33] - Code Task Status Update: Created [`sky-server/src/main/java/com/sky/controller/admin/CategoryController.java`](sky-server/src/main/java/com/sky/controller/admin/CategoryController.java) as part of "分类管理" feature.
+* [2025-05-10 20:09:02] - Code Task Status Update: Added detailed Javadoc comments to `sky-server/src/main/java/com/sky/annotation/AutoFill.java`.
+* [2025-05-10 20:40:33] - 完成 AOP 公共字段自动填充功能编码。
+- [ ] 2025-05-10T12:42:07.000Z - Started documentation for AutoFill AOP feature.
+- [x] 2025-05-10T12:46:30.000Z - Completed documentation for AutoFill AOP feature. Created `auto_fill_aop_documentation.md`.
